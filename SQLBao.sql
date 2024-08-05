@@ -30,6 +30,32 @@ CREATE TABLE Sub_category (
     id_category INT REFERENCES Category(id_category)
 );
 
+CREATE TABLE user1 (
+    user_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_name NVARCHAR(100),
+    user_join_date DATETIME
+);
+
+CREATE TABLE comment (
+    comment_id INT IDENTITY(1,1) PRIMARY KEY,
+    id_post INT REFERENCES Post(id_Post),
+    user_id INT REFERENCES user1(user_id),
+    comment_body NVARCHAR(MAX),
+    comment_date DATETIME
+);
+
+CREATE TABLE rate (
+    rate_id INT IDENTITY(1,1) PRIMARY KEY,
+    id_post INT REFERENCES Post(id_Post),
+    user_id INT REFERENCES user1(user_id),
+    rate_value INT CHECK (rate_value BETWEEN 1 AND 5),
+    rate_date DATETIME
+);
+
+CREATE INDEX idx_user_name ON user1(user_name)
+CREATE INDEX idx_post_name ON Post(name_Post)
+CREATE INDEX idx_poster_name ON Poster(name_Poster)
+
 -- Chèn dữ liệu vào bảng Poster
 INSERT INTO Poster (name_Poster) VALUES
 (N'Nguyễn Văn An'),
@@ -82,7 +108,7 @@ INSERT INTO Post (id_Poster, id_category, id_sub_category, Post_datetime, conten
 (9, 9, 9, '2023-07-30 18:00:00', N'Cách làm món phở gà truyền thống ngon đúng điệu...'),
 (10, 10, 10, '2023-07-30 19:15:00', N'Đánh giá chi tiết mẫu xe máy điện mới nhất trên thị trường...');
 
--- Cập nhật các bản ghi ban đầu
+
 UPDATE Post SET name_Post = N'Tin tức thời sự mới nhất' WHERE id_Post = 1;
 UPDATE Post SET name_Post = N'Kết quả bóng đá hôm nay' WHERE id_Post = 2;
 UPDATE Post SET name_Post = N'Tin tức giải trí showbiz' WHERE id_Post = 3;
@@ -93,8 +119,6 @@ UPDATE Post SET name_Post = N'Bí quyết sống khỏe mỗi ngày' WHERE id_Po
 UPDATE Post SET name_Post = N'Khám phá điểm du lịch mới' WHERE id_Post = 8;
 UPDATE Post SET name_Post = N'Công thức nấu ăn ngon' WHERE id_Post = 9;
 UPDATE Post SET name_Post = N'Đánh giá xe mới nhất' WHERE id_Post = 10;
-
--- Cập nhật các bản ghi mới thêm
 UPDATE Post SET name_Post = N'Căng thẳng mới ở Biển Đông' WHERE id_Post = 11;
 UPDATE Post SET name_Post = N'Hỗ trợ người dân vùng lũ' WHERE id_Post = 12;
 UPDATE Post SET name_Post = N'Điểm mới Bộ luật Dân sự' WHERE id_Post = 13;
@@ -111,17 +135,52 @@ UPDATE Post SET name_Post = N'5 cách học tiếng Anh hiệu quả' WHERE id_P
 UPDATE Post SET name_Post = N'Lợi ích của chế độ ăn Địa Trung Hải' WHERE id_Post = 24;
 UPDATE Post SET name_Post = N'Tiến bộ mới trong điều trị ung thư' WHERE id_Post = 25;
 
+INSERT INTO user1 (user_id, user_name, user_join_date) VALUES
+(1, N'Nguyễn Văn A', '2023-01-01'),
+(2, N'Trần Thị B', '2023-02-15'),
+(3, N'Lê Văn C', '2023-03-20'),
+(4, N'Phạm Thị D', '2023-04-10'),
+(5, N'Hoàng Văn E', '2023-05-05'),
+(6, N'Vũ Thị F', '2023-06-15'),
+(7, N'Đặng Văn G', '2023-07-01'),
+(8, N'Trịnh Thị H', '2023-07-20');
 
+INSERT INTO comment (id_post, user_id, comment_body, comment_date) VALUES
+(1, 3, N'Thông tin rất hữu ích, cảm ơn tác giả!', '2023-08-04 09:00:00'),
+(1, 4, N'Tôi rất thích cách trình bày của bài viết này.', '2023-08-04 10:30:00'),
+(2, 1, N'Bài viết rất chi tiết và đầy đủ.', '2023-08-04 11:00:00'),
+(2, 5, N'Tôi học được nhiều điều mới từ bài viết này.', '2023-08-04 12:15:00'),
+(2, 2, N'Rất đáng để đọc và chia sẻ!', '2023-08-04 13:30:00'),
+(3, 1, N'Bài viết rất hay, mong có thêm nhiều bài như thế này.', '2023-08-05 09:45:00'),
+(3, 6, N'Tôi đồng ý với quan điểm của tác giả.', '2023-08-05 10:30:00'),
+(3, 7, N'Thông tin này rất bổ ích cho công việc của tôi.', '2023-08-05 11:15:00'),
+(4, 2, N'Bài viết rất thú vị và hấp dẫn.', '2023-08-06 14:00:00'),
+(4, 8, N'Tôi sẽ áp dụng những điều học được vào cuộc sống.', '2023-08-06 15:30:00'),
+(5, 3, N'Bài viết rất sâu sắc và đầy ý nghĩa.', '2023-08-07 10:00:00'),
+(5, 4, N'Tôi rất thích cách tác giả phân tích vấn đề.', '2023-08-07 11:30:00'),
+(5, 1, N'Bài viết này đã mở rộng tầm nhìn của tôi.', '2023-08-07 13:00:00');
 
--- Hiển thị tên các tác giả 
-SELECT DISTINCT name_Poster FROM Poster
+INSERT INTO rate (id_post, user_id, rate_value, rate_date) VALUES
+(1, 1, 5, '2023-08-01 10:05:00'),
+(1, 6, 2, '2023-08-01 10:05:00'),
+(1, 2, 4, '2021-08-01 11:35:00'),
+(2, 3, 5, '2023-08-02 09:20:00'),
+(3, 4, 4, '2023-08-02 14:25:00'),
+(3, 1, 5, '2024-08-01 10:05:00'),
+(4, 5, 5, '2025-08-03 16:50:00');
+
+INSERT INTO rate (id_post, user_id, rate_value, rate_date) VALUES
+(1, 5, 4, '2021-08-01 11:35:00'),
+(3, 6, 2, '2021-08-01 11:35:00'),
+(4, 1, 3, '2021-08-01 11:35:00');
+
 
 -- Lấy các bài và tên tác giả
-SELECT pt.name_Poster, p.name_Post, p.content, p.Post_datetime, c.name_category, sc.name_sub_category 
+SELECT pt.name_Poster, p.Post_datetime, p.name_Post, p.content, c.name_category, sc.name_sub_category 
 FROM Post p
 JOIN Poster pt ON pt.id_Poster = p.id_Poster
 JOIN Category c ON c.id_category = p.id_category
-JOIN Sub_category sc ON sc.id_sub_category = p.id_sub_category
+JOIN Sub_category sc ON sc  .id_sub_category = p.id_sub_category
 
 -- Lấy các bài viết cùng 1 tác giả
 SELECT pt.name_Poster, p.name_Post, p.content, p.Post_datetime, c.name_category, sc.name_sub_category 
@@ -137,3 +196,25 @@ FROM Post p
 JOIN Category c ON c.id_category = p.id_category
 GROUP BY c.name_category
 ORDER BY post_count DESC
+
+-- Hiển thị tên user và tất cả comment của user đó
+SELECT 
+    u.user_id,
+    u.user_name,
+    p.id_post,
+    p.name_post,
+    c.comment_id,
+    c.comment_body,
+    c.comment_date
+FROM user1 u
+JOIN comment c ON u.user_id = c.user_id
+JOIN post p ON c.id_post = p.id_post
+WHERE u.user_id = '1'
+ORDER BY c.comment_date DESC;
+
+-- Hiển thị Top 5 bài viết trang nhất 
+SELECT TOP 5 p.id_post, p.name_post, AVG(r.rate_value) as stars
+FROM post p
+JOIN rate r ON p.id_post = r.id_post
+GROUP BY p.id_post, p.name_post
+ORDER BY stars DESC
