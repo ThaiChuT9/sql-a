@@ -244,7 +244,7 @@ WHERE
 ORDER BY
     C.COMMENT_DATE DESC;
 
--- Hiển thị Top 5 bài viết trang nhất
+-- Hiển thị Top 5 bài viết dựa vào rate của người dùng
 SELECT
     TOP 5 P.ID_POST,
     P.NAME_POST,
