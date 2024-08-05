@@ -258,3 +258,19 @@ GROUP BY
     P.NAME_POST
 ORDER BY
     STARS DESC
+
+-- Hiển thị comment trong bài viết 
+SELECT
+    P.NAME_POST,
+    C.COMMENT_BODY,
+    U.USER_NAME
+FROM
+    POST    P
+    JOIN COMMENT C
+    ON P.ID_POST = C.ID_POST
+    JOIN USER1 U
+    ON C.USER_ID = U.USER_ID
+WHERE
+    P.ID_POST = '1'
+ORDER BY
+    C.COMMENT_DATE DESC
