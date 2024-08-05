@@ -176,45 +176,85 @@ INSERT INTO rate (id_post, user_id, rate_value, rate_date) VALUES
 
 
 -- Lấy các bài và tên tác giả
-SELECT pt.name_Poster, p.Post_datetime, p.name_Post, p.content, c.name_category, sc.name_sub_category 
-FROM Post p
-JOIN Poster pt ON pt.id_Poster = p.id_Poster
-JOIN Category c ON c.id_category = p.id_category
-JOIN Sub_category sc ON sc  .id_sub_category = p.id_sub_category
+SELECT
+    PT.NAME_POSTER,
+    P.POST_DATETIME,
+    P.NAME_POST,
+    P.CONTENT,
+    C.NAME_CATEGORY,
+    SC.NAME_SUB_CATEGORY
+FROM
+    POST         P
+    JOIN POSTER PT
+    ON PT.ID_POSTER = P.ID_POSTER
+    JOIN CATEGORY C
+    ON C.ID_CATEGORY = P.ID_CATEGORY
+    JOIN SUB_CATEGORY SC
+    ON SC .ID_SUB_CATEGORY = P.ID_SUB_CATEGORY
 
 -- Lấy các bài viết cùng 1 tác giả
-SELECT pt.name_Poster, p.name_Post, p.content, p.Post_datetime, c.name_category, sc.name_sub_category 
-FROM Post p
-JOIN Poster pt ON pt.id_Poster = p.id_Poster
-JOIN Category c ON c.id_category = p.id_category
-JOIN Sub_category sc ON sc.id_sub_category = p.id_sub_category
-WHERE pt.name_Poster = N'Trần Thị Bình'
+SELECT
+    PT.NAME_POSTER,
+    P.NAME_POST,
+    P.CONTENT,
+    P.POST_DATETIME,
+    C.NAME_CATEGORY,
+    SC.NAME_SUB_CATEGORY
+FROM
+    POST P
+    JOIN POSTER PT
+    ON PT.ID_POSTER = P.ID_POSTER
+    JOIN CATEGORY C
+    ON C.ID_CATEGORY = P.ID_CATEGORY
+    JOIN SUB_CATEGORY SC
+    ON SC.ID_SUB_CATEGORY = P.ID_SUB_CATEGORY
+WHERE
+    PT.NAME_POSTER = N'Trần Thị Bình'
 
 -- Đếm số bài viết trong các category
-SELECT c.name_category, COUNT(*) AS post_count 
-FROM Post p
-JOIN Category c ON c.id_category = p.id_category
-GROUP BY c.name_category
-ORDER BY post_count DESC
+SELECT
+    C.NAME_CATEGORY,
+    COUNT(*) AS POST_COUNT
+FROM
+    POST P
+    JOIN CATEGORY C
+    ON C.ID_CATEGORY = P.ID_CATEGORY
+GROUP BY
+    C.NAME_CATEGORY
+ORDER BY
+    POST_COUNT DESC
 
 -- Hiển thị tên user và tất cả comment của user đó
-SELECT 
-    u.user_id,
-    u.user_name,
-    p.id_post,
-    p.name_post,
-    c.comment_id,
-    c.comment_body,
-    c.comment_date
-FROM user1 u
-JOIN comment c ON u.user_id = c.user_id
-JOIN post p ON c.id_post = p.id_post
-WHERE u.user_id = '1'
-ORDER BY c.comment_date DESC;
+SELECT
+    U.USER_ID,
+    U.USER_NAME,
+    P.ID_POST,
+    P.NAME_POST,
+    C.COMMENT_ID,
+    C.COMMENT_BODY,
+    C.COMMENT_DATE
+FROM
+    USER1 U
+    JOIN COMMENT C
+    ON U.USER_ID = C.USER_ID
+    JOIN POST P
+    ON C.ID_POST = P.ID_POST
+WHERE
+    U.USER_ID = '1'
+ORDER BY
+    C.COMMENT_DATE DESC;
 
--- Hiển thị Top 5 bài viết trang nhất 
-SELECT TOP 5 p.id_post, p.name_post, AVG(r.rate_value) as stars
-FROM post p
-JOIN rate r ON p.id_post = r.id_post
-GROUP BY p.id_post, p.name_post
-ORDER BY stars DESC
+-- Hiển thị Top 5 bài viết trang nhất
+SELECT
+    TOP 5 P.ID_POST,
+    P.NAME_POST,
+    AVG(R.RATE_VALUE) AS STARS
+FROM
+    POST P
+    JOIN RATE R
+    ON P.ID_POST = R.ID_POST
+GROUP BY
+    P.ID_POST,
+    P.NAME_POST
+ORDER BY
+    STARS DESC
